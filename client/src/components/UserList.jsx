@@ -15,6 +15,7 @@ export default function UserList() {
     useEffect(() => {
         userService.getAll()
             .then(result => setUsers(result))
+            .catch(err => console.log(err))
     }, [])
 
     return (
@@ -149,8 +150,10 @@ export default function UserList() {
                         </tr>
                     </thead>
                     <tbody>
-                        {/* <!-- Table row component --> */}
-                        <UserListItem />
+                        {users.map(user => <UserListItem
+                            key={user._id}
+                            {...user}
+                        />)}
                     </tbody>
                 </table>
             </div>

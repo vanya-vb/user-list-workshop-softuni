@@ -1,11 +1,11 @@
-export default function UserCreate({onClose}) {
+export default function UserCreate({ onClose, onSave }) {
     return (
         <div className="overlay">
             <div className="backdrop" onClick={onClose}></div>
             <div className="modal">
                 <div className="user-container">
                     <header className="headers">
-                        <h2>Edit User/Add User</h2>
+                        <h2>Add User</h2>
                         <button className="btn close" onClick={onClose}>
                             <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="xmark"
                                 className="svg-inline--fa fa-xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
@@ -15,7 +15,7 @@ export default function UserCreate({onClose}) {
                             </svg>
                         </button>
                     </header>
-                    <form>
+                    <form onSubmit={onSave}>
                         <div className="form-row">
                             <div className="form-group">
                                 <label htmlFor="firstName">First name</label>

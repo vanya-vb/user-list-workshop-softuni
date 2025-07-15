@@ -49,7 +49,11 @@ export default function UserList() {
 
     const userInfoClickHandler = (userId) => {
         setUserIdInfo(userId);
-    }
+    };
+
+    const userInfoCloseHandler = () => {
+        setUserIdInfo(null);
+    };
 
     return (
         <section className="card users-container">
@@ -63,7 +67,7 @@ export default function UserList() {
             {userIdInfo && (
                 <UserInfo
                     userId={userIdInfo}
-
+                    onClose={userInfoCloseHandler}
                 />
             )}
 

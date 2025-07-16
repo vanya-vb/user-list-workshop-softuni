@@ -17,6 +17,7 @@ export default function UserList() {
     const [showCreate, setShowCreate] = useState(false);
     const [userIdInfo, setUserIdInfo] = useState(); // undefined
     const [userIdDelete, setUserIdDelete] = useState(null);
+    const [userIdEdit, setUserIdEdit] = useState(null);
 
     useEffect(() => {
         userService.getAll()
@@ -30,13 +31,14 @@ export default function UserList() {
 
     const closeCreateUserClickHandler = () => {
         setShowCreate(false);
+        setUserIdEdit(null);
     };
 
     const saveCreateUserClickHandler = async (e) => {
         e.preventDefault();
 
         // get form data
-        const formData = new FormData(e.target);
+        const formData = new FormData(e.target.parentElement.parentElement);
         const userData = Object.fromEntries(formData);
 
         // create new user on server
@@ -76,6 +78,28 @@ export default function UserList() {
         setUserIdDelete(null);
     };
 
+    const onEditClickHandler = (userId) => {
+        setUserIdEdit(userId)
+    };
+
+    const saveEditUserClickHandler = async (e) => {
+        const userId = userIdEdit;
+        e.preventDefault();
+
+        // get form data
+        const formData = new FormData(e.target.parentElement.parentElement);
+        const userData = Object.fromEntries(formData);
+
+        // update user on server
+        const updatedUser = await userService.update(userIdEdit, userData);
+
+        // update local state
+        setUsers(state => state.map(user => user._id === userId ? updatedUser : user))
+
+        // close modal
+        setUserIdEdit(null);
+    };
+
     return (
         <section className="card users-container">
             <Search />
@@ -83,7 +107,8 @@ export default function UserList() {
                 <UserCreate
                     onClose={closeCreateUserClickHandler}
                     onSave={saveCreateUserClickHandler}
-                />)}
+                />
+            )}
 
             {userIdInfo && (
                 <UserInfo
@@ -96,7 +121,17 @@ export default function UserList() {
                 <UserDelete
                     onClose={userDeleteCloseHandler}
                     onDelete={userDeleteHandler}
-                />)}
+                />
+            )}
+
+            {userIdEdit && (
+                <UserCreate
+                    userId={userIdEdit}
+                    onClose={closeCreateUserClickHandler}
+                    onSave={saveCreateUserClickHandler}
+                    onEdit={saveEditUserClickHandler}
+                />
+            )}
 
             {/* <!-- Table component --> */}
             <div className="table-wrapper">
@@ -230,6 +265,7 @@ export default function UserList() {
                             key={user._id}
                             onInfoClick={userInfoClickHandler}
                             onDeleteClick={userDeleteClickHandler}
+                            onEditClick={onEditClickHandler}
                             {...user}
                         />)}
                     </tbody>
